@@ -51,21 +51,21 @@ build cmake_object_order_depends_target_NetFramework: phony || CMakeFiles/NetFra
 
 build CMakeFiles/NetFramework.dir/Core/FS/FS.cpp.obj: CXX_COMPILER__NetFramework_Debug C$:/Users/MikoG/CLionProjects/NetFramework/Core/FS/FS.cpp || cmake_object_order_depends_target_NetFramework
   DEP_FILE = CMakeFiles\NetFramework.dir\Core\FS\FS.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
   INCLUDES = -IC:/Users/MikoG/CLionProjects/NetFramework/Core/FS -IC:/Users/MikoG/CLionProjects/NetFramework/Core/HTTP -IC:/Users/MikoG/CLionProjects/NetFramework/Core/NET
   OBJECT_DIR = CMakeFiles\NetFramework.dir
   OBJECT_FILE_DIR = CMakeFiles\NetFramework.dir\Core\FS
 
 build CMakeFiles/NetFramework.dir/Core/HTTP/HTTP.cpp.obj: CXX_COMPILER__NetFramework_Debug C$:/Users/MikoG/CLionProjects/NetFramework/Core/HTTP/HTTP.cpp || cmake_object_order_depends_target_NetFramework
   DEP_FILE = CMakeFiles\NetFramework.dir\Core\HTTP\HTTP.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
   INCLUDES = -IC:/Users/MikoG/CLionProjects/NetFramework/Core/FS -IC:/Users/MikoG/CLionProjects/NetFramework/Core/HTTP -IC:/Users/MikoG/CLionProjects/NetFramework/Core/NET
   OBJECT_DIR = CMakeFiles\NetFramework.dir
   OBJECT_FILE_DIR = CMakeFiles\NetFramework.dir\Core\HTTP
 
 build CMakeFiles/NetFramework.dir/Core/NET/NET.cpp.obj: CXX_COMPILER__NetFramework_Debug C$:/Users/MikoG/CLionProjects/NetFramework/Core/NET/NET.cpp || cmake_object_order_depends_target_NetFramework
   DEP_FILE = CMakeFiles\NetFramework.dir\Core\NET\NET.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
   INCLUDES = -IC:/Users/MikoG/CLionProjects/NetFramework/Core/FS -IC:/Users/MikoG/CLionProjects/NetFramework/Core/HTTP -IC:/Users/MikoG/CLionProjects/NetFramework/Core/NET
   OBJECT_DIR = CMakeFiles\NetFramework.dir
   OBJECT_FILE_DIR = CMakeFiles\NetFramework.dir\Core\NET
