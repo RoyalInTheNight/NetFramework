@@ -49,26 +49,12 @@ cmake_ninja_workdir = C$:/Users/MikoG/CLionProjects/NetFramework/cmake-build-deb
 
 build cmake_object_order_depends_target_NetFramework: phony || CMakeFiles/NetFramework.dir
 
-build CMakeFiles/NetFramework.dir/Core/FS/FS.cpp.obj: CXX_COMPILER__NetFramework_Debug C$:/Users/MikoG/CLionProjects/NetFramework/Core/FS/FS.cpp || cmake_object_order_depends_target_NetFramework
-  DEP_FILE = CMakeFiles\NetFramework.dir\Core\FS\FS.cpp.obj.d
+build CMakeFiles/NetFramework.dir/Core/main.cpp.obj: CXX_COMPILER__NetFramework_Debug C$:/Users/MikoG/CLionProjects/NetFramework/Core/main.cpp || cmake_object_order_depends_target_NetFramework
+  DEP_FILE = CMakeFiles\NetFramework.dir\Core\main.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++23
   INCLUDES = -IC:/Users/MikoG/CLionProjects/NetFramework/Core/FS -IC:/Users/MikoG/CLionProjects/NetFramework/Core/HTTP -IC:/Users/MikoG/CLionProjects/NetFramework/Core/NET
   OBJECT_DIR = CMakeFiles\NetFramework.dir
-  OBJECT_FILE_DIR = CMakeFiles\NetFramework.dir\Core\FS
-
-build CMakeFiles/NetFramework.dir/Core/HTTP/HTTP.cpp.obj: CXX_COMPILER__NetFramework_Debug C$:/Users/MikoG/CLionProjects/NetFramework/Core/HTTP/HTTP.cpp || cmake_object_order_depends_target_NetFramework
-  DEP_FILE = CMakeFiles\NetFramework.dir\Core\HTTP\HTTP.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
-  INCLUDES = -IC:/Users/MikoG/CLionProjects/NetFramework/Core/FS -IC:/Users/MikoG/CLionProjects/NetFramework/Core/HTTP -IC:/Users/MikoG/CLionProjects/NetFramework/Core/NET
-  OBJECT_DIR = CMakeFiles\NetFramework.dir
-  OBJECT_FILE_DIR = CMakeFiles\NetFramework.dir\Core\HTTP
-
-build CMakeFiles/NetFramework.dir/Core/NET/NET.cpp.obj: CXX_COMPILER__NetFramework_Debug C$:/Users/MikoG/CLionProjects/NetFramework/Core/NET/NET.cpp || cmake_object_order_depends_target_NetFramework
-  DEP_FILE = CMakeFiles\NetFramework.dir\Core\NET\NET.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu++23
-  INCLUDES = -IC:/Users/MikoG/CLionProjects/NetFramework/Core/FS -IC:/Users/MikoG/CLionProjects/NetFramework/Core/HTTP -IC:/Users/MikoG/CLionProjects/NetFramework/Core/NET
-  OBJECT_DIR = CMakeFiles\NetFramework.dir
-  OBJECT_FILE_DIR = CMakeFiles\NetFramework.dir\Core\NET
+  OBJECT_FILE_DIR = CMakeFiles\NetFramework.dir\Core
 
 
 # =============================================================================
@@ -78,7 +64,7 @@ build CMakeFiles/NetFramework.dir/Core/NET/NET.cpp.obj: CXX_COMPILER__NetFramewo
 #############################################
 # Link the executable NetFramework.exe
 
-build NetFramework.exe: CXX_EXECUTABLE_LINKER__NetFramework_Debug CMakeFiles/NetFramework.dir/Core/FS/FS.cpp.obj CMakeFiles/NetFramework.dir/Core/HTTP/HTTP.cpp.obj CMakeFiles/NetFramework.dir/Core/NET/NET.cpp.obj
+build NetFramework.exe: CXX_EXECUTABLE_LINKER__NetFramework_Debug CMakeFiles/NetFramework.dir/Core/main.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\NetFramework.dir
