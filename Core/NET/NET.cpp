@@ -177,6 +177,9 @@ core::empty_type ISocket::_send(std::string &message, core::int32_t flags) {
 
 }
 
+core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_t flags) {
+
+}
 
 ISocket::~ISocket() {
     for (SOCKET fd : conf->socks) {
