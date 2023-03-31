@@ -131,6 +131,8 @@ core::empty_type ISocket::_bind() {
         static core::word __thread buffer[128];
 
         snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+
+        conf->exception_error_buffer.push_back((std::string)buffer);
     }
     #else
     if (conf->socks.at(core::net::net_treatment_part::bind) == core::net::INVALID_SOCKET) {
@@ -139,6 +141,8 @@ core::empty_type ISocket::_bind() {
             static core::word __thread buffer[128];
 
             snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+
+            conf->exception_error_buffer.push_back((std::string)buffer);
         }
     #endif
 
@@ -151,6 +155,8 @@ core::empty_type ISocket::_bind() {
         static core::word __thread buffer[128];
 
         snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+
+        conf->exception_error_buffer.push_back((std::string)buffer);
     }
     #else
     if(bind(conf->socks.at(core::net::net_treatment_part::bind),
@@ -161,6 +167,8 @@ core::empty_type ISocket::_bind() {
         static core::word __thread buffer[128];
 
         snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+
+        conf->exception_error_buffer.push_back((std::string)buffer);
     }
     #endif
 }
