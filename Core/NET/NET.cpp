@@ -120,7 +120,8 @@ core::empty_type ISocket::_bind() {
 
     if(settings->l4_proto == core::net::tcp)
         conf->socks.at(core::net::net_treatment_part::bind) = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    else if(settings->l4_proto == core::net::udp)
+
+    if(settings->l4_proto == core::net::udp)
         conf->socks.at(core::net::net_treatment_part::bind) = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
     #ifdef WIN64
