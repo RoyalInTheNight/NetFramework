@@ -40,8 +40,13 @@ private:
         std::vector<core::word>
                       data_buffer;
 
+        core::int32_t size_headr;
+
         std::vector<core::int32_t>
                      error_buffer;
+
+        std::vector<std::string>
+           exception_error_buffer;
     } pkt_conf_t, *_pkt_conf_t; // структура для надстройки функций начиная с 59 по 63 строку
 
     _pkt_conf_t              conf;
