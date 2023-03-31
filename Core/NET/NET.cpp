@@ -99,6 +99,101 @@ core::empty_type ISocket::_connect() {
     }
 }
 
+core::empty_type ISocket::_bind() {
+    conf->headr.at(core::net::net_treatment_part::bind)->S_un.S_addr = inet_addr(settings->ip_addr.c_str());
+    conf->headr.at(core::net::net_treatment_part::bind)->sin_port    = htons(settings->port);
+    conf->headr.at(core::net::net_treatment_part::bind)->sin_family  = AF_INET;
+
+    if(settings->l4_proto == core::net::tcp) {
+        conf->socks.at(core::net::net_treatment_part::bind) = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+        #ifdef WIN64
+        if (conf->socks.at(core::net::net_treatment_part::bind) == INVALID_SOCKET) {
+            conf->error_buffer.push_back(WSAGetLastError());
+
+            static core::word __thread buffer[128];
+
+            snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        }
+        #else
+        if (conf->socks.at(core::net::net_treatment_part::bind) == core::net::INVALID_SOCKET) {
+                conf->error_buffer.push_back(core::net::INVALID_SOCKET);
+
+                static core::word __thread buffer[128];
+
+                snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+            }
+        #endif
+
+        #ifdef WIN64
+        if(bind(conf->socks.at(core::net::net_treatment_part::bind),
+                (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
+                sizeof(*conf->headr.at(core::net::net_treatment_part::bind))) != 0) {
+            conf->error_buffer.push_back(WSAGetLastError());
+
+            static core::word __thread buffer[128];
+
+            snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        }
+        #else
+        if(bind(conf->socks.at(core::net::net_treatment_part::bind),
+                (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
+                sizeof(*conf->headr.at(core::net::net_treatment_part::bind))) != 0) {
+            conf->error_buffer.push_back(WSAGetLastError());
+
+            static core::word __thread buffer[128];
+
+            snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        }
+        #endif
+    }
+    else if(settings->l4_proto == core::net::udp) {
+        conf->socks.at(core::net::net_treatment_part::bind) = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+        #ifdef WIN64
+        if (conf->socks.at(core::net::net_treatment_part::bind) == INVALID_SOCKET) {
+            conf->error_buffer.push_back(WSAGetLastError());
+
+            static core::word __thread buffer[128];
+
+            snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        }
+        #else
+        if (conf->socks.at(core::net::net_treatment_part::bind) == core::net::INVALID_SOCKET) {
+                conf->error_buffer.push_back(core::net::INVALID_SOCKET);
+
+                static core::word __thread buffer[128];
+
+                snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+            }
+        #endif
+
+        #ifdef WIN64
+        if(bind(conf->socks.at(core::net::net_treatment_part::bind),
+                (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
+                sizeof(*conf->headr.at(core::net::net_treatment_part::bind))) != 0) {
+            conf->error_buffer.push_back(WSAGetLastError());
+
+            static core::word __thread buffer[128];
+
+            snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        }
+        #else
+        if(bind(conf->socks.at(core::net::net_treatment_part::bind),
+                (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
+                sizeof(*conf->headr.at(core::net::net_treatment_part::bind))) != 0) {
+            conf->error_buffer.push_back(WSAGetLastError());
+
+            static core::word __thread buffer[128];
+
+            snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        }
+        #endif
+
+
+    }
+}
+
 
 ISocket::~ISocket() {
     for (SOCKET fd : conf->socks) {
