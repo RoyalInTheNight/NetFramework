@@ -16,8 +16,29 @@ namespace core {
     typedef long long           int64_t;
     typedef unsigned long long uint64_t;
 
+    typedef void                 empty_type;
+    typedef core::empty_type *memory_buffer;
+
     namespace fs {
         typedef core::word *  fs_path;
+    }
+
+    namespace net {
+        typedef core::word *winsock_buffer_type;
+
+        const std::string &tcp = "tcp:pick";
+        const std::string &udp = "udp:pick";
+
+        enum net_treatment_part {
+            connect = 0,
+            bind,
+            accept
+        };
+
+        #ifndef WIN64 // linux const's
+            const static core::int64_t  INVALID_SOCKET = (-1);
+            const static core::int32_t  SOCKET_ERROR   = (-1);
+        #endif // WIN64
     }
 }
 

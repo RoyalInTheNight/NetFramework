@@ -3,17 +3,17 @@
 #define NETFRAMEWORK_INET_H
 
 #ifdef WIN64 // Windows
-#import <WinSock2.h>
-
+#  import <WinSock2.h>
+#  import <ws2tcpip.h>
 #else // Linux
-#import <sys/socket.h>
-#import <arpa/inet.h>
-#import <netinet/in.h>
-
-#endif
-
-#import <iostream>
-#import "../Core.h"
+#  import <sys/socket.h>
+#  import <arpa/inet.h>
+#  import <netinet/in.h>
+#endif // WIN64
+#  import <iostream>
+#  import <vector>
+#  import <thread>
+#  import "../Core.h"
 
 class ISocket {
 private:
@@ -46,27 +46,44 @@ private:
 
     _pkt_conf_t              conf;
 
-public:
     #ifdef WIN64
         typedef SOCKET            SOCKET;
-        typedef core::int32_t *socklen_t;
+        typedef core::int32_t  socklen_t;
     #else
-        typedef core::uint64_t    SOCKET;
+        typedef core::int64_t     SOCKET;
         typedef socklen_t      socklen_t;
     #endif // WIN64
 
-    struct user_settings {
-        std::string  ip_addr;
-        core::uint16_t  port;
+    std::string &_inet_ntoa(sin_addr);
 
-        std::string l4_proto;
+    core::empty_type _bind(core::int32_t);
+    core::empty_type _connect();
+    core::empty_type _send(std::string &, core::int32_t);
+    core::empty_type _recv(core::net::winsock_buffer_type, std::string::size_type, core::int32_t);
+    SOCKET           _accept();
+
+public:
+    struct user_settings {
+        std::string    ip_addr;
+        core::uint16_t    port;
+
+        std::string   l4_proto;
+        std::string cache_file;
 
         std::vector<std::string>
-                   log_cache;
+                     log_cache;
     };
 
-    ISocket(const ISocket&);
+    user_settings *settings;
 
+    ISocket(const ISocket&);
+    ISocket(const std::string&, core::uint16_t, const std::string&, const std::string&);
+
+    core::empty_type ConnectTCP();
+    core::empty_type ListenConnect();
+
+    core::empty_type Send(std::string &);
+    core::empty_type Recv(std::vector<core::word> *);
 
     ~ISocket(); //closesocket
 };

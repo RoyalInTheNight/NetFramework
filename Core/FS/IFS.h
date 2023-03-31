@@ -5,12 +5,12 @@
 #ifndef NETFRAMEWORK_IFS_H
 #define NETFRAMEWORK_IFS_H
 
-#include <vector>
-#include <string>
-#include <fstream>
-#include <iostream>
+#import <vector>
+#import <string>
+#import <fstream>
+#import <iostream>
 
-#include "../Core.h"
+#import "../Core.h"
 
 class IFileSystem {
     static std::string     filename;
