@@ -118,94 +118,59 @@ core::empty_type ISocket::_bind() {
     conf->headr.at(core::net::net_treatment_part::bind)->sin_port    = htons(settings->port);
     conf->headr.at(core::net::net_treatment_part::bind)->sin_family  = AF_INET;
 
-    if(settings->l4_proto == core::net::tcp) {
+    if (settings->l4_proto == core::net::tcp)
         conf->socks.at(core::net::net_treatment_part::bind) = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-        #ifdef WIN64
-        if (conf->socks.at(core::net::net_treatment_part::bind) == INVALID_SOCKET) {
-            conf->error_buffer.push_back(WSAGetLastError());
-
-            static core::word __thread buffer[128];
-
-            snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
-        }
-        #else
-        if (conf->socks.at(core::net::net_treatment_part::bind) == core::net::INVALID_SOCKET) {
-                conf->error_buffer.push_back(core::net::INVALID_SOCKET);
-
-                static core::word __thread buffer[128];
-
-                snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
-            }
-        #endif
-
-        #ifdef WIN64
-        if(bind(conf->socks.at(core::net::net_treatment_part::bind),
-                (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
-                sizeof(*conf->headr.at(core::net::net_treatment_part::bind))) != 0) {
-            conf->error_buffer.push_back(WSAGetLastError());
-
-            static core::word __thread buffer[128];
-
-            snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
-        }
-        #else
-        if(bind(conf->socks.at(core::net::net_treatment_part::bind),
-                (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
-                sizeof(*conf->headr.at(core::net::net_treatment_part::bind))) != 0) {
-            conf->error_buffer.push_back(WSAGetLastError());
-
-            static core::word __thread buffer[128];
-
-            snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
-        }
-        #endif
-    }
-    else if(settings->l4_proto == core::net::udp) {
+    if (settings->l4_proto == core::net::udp)
         conf->socks.at(core::net::net_treatment_part::bind) = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-        #ifdef WIN64
-        if (conf->socks.at(core::net::net_treatment_part::bind) == INVALID_SOCKET) {
+    #ifdef WIN64
+        if (conf->socks.at(core::net::net_treatment_part::connect) == INVALID_SOCKET) {
             conf->error_buffer.push_back(WSAGetLastError());
 
             static core::word __thread buffer[128];
 
             snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+
+            conf->exception_error_buffer.push_back((std::string)buffer);
         }
-        #else
-        if (conf->socks.at(core::net::net_treatment_part::bind) == core::net::INVALID_SOCKET) {
-                conf->error_buffer.push_back(core::net::INVALID_SOCKET);
+    #else
+        if (conf->socks.at(core::net::net_treatment_part::connect) == core::net::INVALID_SOCKET) {
+            conf->error_buffer.push_back(core::net::INVALID_SOCKET);
 
-                static core::word __thread buffer[128];
+            static core::word __thread buffer[128];
 
-                snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
-            }
-        #endif
+            snprintf(buffer, sizeof(buffer), "error create socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
 
-        #ifdef WIN64
-        if(bind(conf->socks.at(core::net::net_treatment_part::bind),
-                (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
-                sizeof(*conf->headr.at(core::net::net_treatment_part::bind))) != 0) {
+            conf->exception_error_buffer.push_back((std::string)buffer);
+        }
+    #endif // WIN64
+
+    #ifdef WIN64
+        if (bind(conf->socks.at(core::net::net_treatment_part::bind),
+                 (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
+                 conf->size_headr) == SOCKET_ERROR) {
             conf->error_buffer.push_back(WSAGetLastError());
 
             static core::word __thread buffer[128];
 
-            snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+            snprintf(buffer, sizeof(buffer), "error bind: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+
+            conf->exception_error_buffer.push_back((std::string)buffer);
         }
-        #else
-        if(bind(conf->socks.at(core::net::net_treatment_part::bind),
-                (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
-                sizeof(*conf->headr.at(core::net::net_treatment_part::bind))) != 0) {
-            conf->error_buffer.push_back(WSAGetLastError());
+    #else
+        if (bind(conf->socks.at(core::net::net_treatment_part::bind),
+                 (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
+                 conf->size_headr) == core::net::SOCKET_ERROR) {
+            conf->error_buffer.push_back(core::net::SOCKET_ERROR);
 
             static core::word __thread buffer[128];
 
-            snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+            snprintf(buffer, sizeof(buffer), "error bind: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+
+            conf->exception_error_buffer.push_back((std::string)buffer);
         }
-        #endif
-
-
-    }
+    #endif
 }
 
 
