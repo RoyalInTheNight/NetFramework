@@ -205,6 +205,15 @@ SOCKET ISocket::_accept() {
     return conf->socks.at(core::net::net_treatment_part::accept);
 }
 
+core::empty_type ISocket::_recv(core::net::winsock_buffer_type buffer, std::string::size_type len_result, core::int32_t flag) {
+    if(recv(conf->socks.at(flag), buffer, len_result, flag) <= 0) {
+        conf->error_buffer.push_back(WSAGetLastError());
+        static core::word __thread buffer[128];
+        snprintf(buffer, sizeof(buffer), "error get message: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        conf->exception_error_buffer.push_back((std::string)buffer);
+    }
+}
+
 ISocket::~ISocket() {
     for (SOCKET fd : conf->socks) {
         #ifdef WIN64
