@@ -17,7 +17,7 @@
 
 class ISocket {
 private:
-    struct sin_addr {
+    struct sin_addr { // аналог in_addr, сюда записывается ip адресс
         core::uint32_t S_addr;
     };
 

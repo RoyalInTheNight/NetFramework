@@ -181,6 +181,10 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
 
 }
 
+ISocket::SOCKET ISocket::_accept() {
+    //if (conf->socks.at(core::net::net_treatment_part::accept) = accept(conf->socks.at(core::net::net_treatment_part::bind), (sockaddr*)))
+}
+
 ISocket::~ISocket() {
     for (SOCKET fd : conf->socks) {
         #ifdef WIN64
