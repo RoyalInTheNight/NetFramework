@@ -154,7 +154,7 @@ core::empty_type ISocket::_bind() {
 
         static core::word __thread buffer[128];
 
-        snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        snprintf(buffer, sizeof(buffer), "error bind: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
 
         conf->exception_error_buffer.push_back((std::string)buffer);
     }
@@ -166,7 +166,7 @@ core::empty_type ISocket::_bind() {
 
         static core::word __thread buffer[128];
 
-        snprintf(buffer, sizeof(buffer), "error connection: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        snprintf(buffer, sizeof(buffer), "error bind: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
 
         conf->exception_error_buffer.push_back((std::string)buffer);
     }
@@ -181,8 +181,28 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
 
 }
 
-ISocket::SOCKET ISocket::_accept() {
-    //if (conf->socks.at(core::net::net_treatment_part::accept) = accept(conf->socks.at(core::net::net_treatment_part::bind), (sockaddr*)))
+SOCKET ISocket::_accept() {
+    #ifdef WIN64
+        if((conf->socks.at(core::net::net_treatment_part::accept) = accept(conf->socks.at(core::net::net_treatment_part::bind),
+                                                                          (sockaddr*)conf->headr.at(core::net::net_treatment_part::accept),
+                                                                          &conf->size_headr)) == INVALID_SOCKET) {
+            conf->error_buffer.push_back(WSAGetLastError());
+            static core::word __thread buffer[128];
+            snprintf(buffer, sizeof(buffer), "error accept socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+            conf->exception_error_buffer.push_back((std::string)buffer);
+        }
+    #else
+    if((conf->socks.at(core::net::net_treatment_part::accept) = accept(conf->socks.at(core::net::net_treatment_part::bind),
+                                                                          (sockaddr*)conf->headr.at(core::net::net_treatment_part::accept),
+                                                                          &conf->size_headr)) == core::net::INVALID_SOCKET) {
+            conf->error_buffer.push_back(core::net::INVALID_SOCKET);
+            static core::word __thread buffer[128];
+            snprintf(buffer, sizeof(buffer), "error accept socket: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+            conf->exception_error_buffer.push_back((std::string)buffer);
+        }
+    #endif
+
+    return conf->socks.at(core::net::net_treatment_part::accept);
 }
 
 ISocket::~ISocket() {
