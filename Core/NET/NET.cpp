@@ -18,7 +18,7 @@ ISocket::ISocket(const std::string &ip_address, core::uint16_t port, const std::
     conf->size_headr = sizeof(pkt_t);
 }
 
-std::string& ISocket::_inet_ntoa(sin_addr in) {
+std::string ISocket::_inet_ntoa(sin_addr in) {
     static core::word __thread buffer[18];
     core::fs::fs_path bytes = (core::fs::fs_path)&in;
 
@@ -26,7 +26,7 @@ std::string& ISocket::_inet_ntoa(sin_addr in) {
 
     std::string return_buffer = buffer;
 
-    return (std::string &)return_buffer;
+    return return_buffer;
 }
 
 core::empty_type ISocket::_connect() {
@@ -246,7 +246,7 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
                              conf->error_buffer.at(conf->error_buffer.size() - 1));
                     conf->exception_error_buffer.push_back((std::string) buffer);
                 }
-        }
+            }
 }
 
 SOCKET ISocket::_accept() {

@@ -59,7 +59,7 @@ private:
         typedef socklen_t      socklen_t;
     #endif // WIN64
 
-    std::string &_inet_ntoa(sin_addr); // перевод ip адреса из числа в строку
+    std::string _inet_ntoa(sin_addr); // перевод ip адреса из числа в строку
 
     core::empty_type _bind();
     core::empty_type _connect();
@@ -92,6 +92,8 @@ public:
 
     core::empty_type Send(std::string &);
     core::empty_type Recv(std::vector<core::word> *);
+
+    core::empty_type start();
 
     ~ISocket(); //closesocket
 };
