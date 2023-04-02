@@ -173,12 +173,80 @@ core::empty_type ISocket::_bind() {
     #endif
 }
 
-core::empty_type ISocket::_send(std::string &message, core::int32_t flags) {
-
+core::empty_type ISocket::_send(std::string &message, core::int32_t flag) {
+    if(settings->l4_proto == core::net::tcp) {
+        if(send(conf->socks.at(flag), (core::net::winsock_buffer_type)message.c_str(), message.size(), flag) == SOCKET_ERROR) {
+            conf->error_buffer.push_back(WSAGetLastError());
+            static core::word __thread buffer[128];
+            snprintf(buffer, sizeof(buffer), "error send message: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+            conf->exception_error_buffer.push_back((std::string)buffer);
+        }
+    }
+    else if(settings->l4_proto == core::net::udp) {
+        if(sendto(conf->socks.at(flag), (core::net::winsock_buffer_type)message.c_str(), message.size(), flag, (sockaddr *)conf->headr.at(core::net::net_treatment_part::connect) , sizeof(conf->headr.at(core::net::net_treatment_part::connect))) == INVALID_SOCKET) {
+            conf->error_buffer.push_back(WSAGetLastError());
+            static core::word __thread buffer[128];
+            snprintf(buffer, sizeof(buffer), "error send message: %d\n",
+                     conf->error_buffer.at(conf->error_buffer.size() - 1));
+            conf->exception_error_buffer.push_back((std::string) buffer);
+        }
+    }
 }
 
-core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_t flags) {
+core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_t flag) {
 
+    int mn1 = 0, mn2 = 10;
+
+    for(int i = 0; i < messages.size()%10; i++) {
+        int mn3 = 0;
+        std::vector<std::string> stream;
+
+        for(int y = mn1; y < mn2; y++) {
+            stream[mn3] = messages[y];
+            mn3++;
+        }
+        mn1+=10; mn2+=10;
+
+        std::thread([&]() {
+            if(settings->l4_proto == core::net::tcp) {
+                for(std::string msg : stream)
+                    if(send(conf->socks.at(flag), (core::net::winsock_buffer_type)msg.c_str(), msg.size(), flag) == SOCKET_ERROR) {
+                        conf->error_buffer.push_back(WSAGetLastError());
+                        static core::word __thread buffer[128];
+                        snprintf(buffer, sizeof(buffer), "error send messages: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+                        conf->exception_error_buffer.push_back((std::string)buffer);
+                    }
+            }
+            else if(settings->l4_proto == core::net::udp) {
+                for(std::string msg : stream)
+                    if(sendto(conf->socks.at(flag), (core::net::winsock_buffer_type)msg.c_str(), msg.size(), flag, (sockaddr *)conf->headr.at(core::net::net_treatment_part::connect) , sizeof(conf->headr.at(core::net::net_treatment_part::connect))) == INVALID_SOCKET) {
+                        conf->error_buffer.push_back(WSAGetLastError());
+                        static core::word __thread buffer[128];
+                        snprintf(buffer, sizeof(buffer), "error send messages: %d\n",
+                                 conf->error_buffer.at(conf->error_buffer.size() - 1));
+                        conf->exception_error_buffer.push_back((std::string) buffer);
+                    }
+                }
+        }).join();
+    }
+    for(int i = (messages.size()%10*10); i < messages.size(); i++)
+        if(settings->l4_proto == core::net::tcp) {
+                if(send(conf->socks.at(flag), (core::net::winsock_buffer_type)messages[i].c_str(), messages[i].size(), flag) == SOCKET_ERROR) {
+                    conf->error_buffer.push_back(WSAGetLastError());
+                    static core::word __thread buffer[128];
+                    snprintf(buffer, sizeof(buffer), "error send messages: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+                    conf->exception_error_buffer.push_back((std::string)buffer);
+                }
+        }
+        else if(settings->l4_proto == core::net::udp) {
+                if(sendto(conf->socks.at(flag), (core::net::winsock_buffer_type)messages[i].c_str(), messages[i].size(), flag, (sockaddr *)conf->headr.at(core::net::net_treatment_part::connect) , sizeof(conf->headr.at(core::net::net_treatment_part::connect))) == INVALID_SOCKET) {
+                    conf->error_buffer.push_back(WSAGetLastError());
+                    static core::word __thread buffer[128];
+                    snprintf(buffer, sizeof(buffer), "error send messages: %d\n",
+                             conf->error_buffer.at(conf->error_buffer.size() - 1));
+                    conf->exception_error_buffer.push_back((std::string) buffer);
+                }
+        }
 }
 
 SOCKET ISocket::_accept() {
