@@ -26,11 +26,15 @@ private:
     #endif // WIN64
 
     struct sin_addr { // аналог in_addr, сюда записывается ip адресс
-        core::uint32_t S_addr;
+        union {
+            struct { u_char  s_b1, s_b2, s_b3, s_b4; } S_un_b;
+            struct { u_short s_w1, s_w2; } S_un_w;
+            core::uint32_t S_addr;
+        } S_un;
     };
 
-    typedef struct sock_in { // аналог sockaddr_in
-        sin_addr             S_un;
+    /*typedef struct sock_in { // аналог sockaddr_in
+        sin_addr         sin_addr;
         core::uint16_t   sin_port;
         core::int16_t  sin_family;
         core::word    sin_zero[8];
@@ -39,7 +43,9 @@ private:
     typedef struct sock { // аналог sockaddr
         core::uint16_t sa_family;
         core::word   sa_data[14];
-    } _raw_pkt_t, *__raw_pkt_t; // замена типов данных
+    } _raw_pkt_t, *__raw_pkt_t; */ // замена типов данных
+
+    typedef sockaddr_in pkt_t, *_pkt_t;
 
     typedef struct net_conf {
         std::vector<SOCKET> socks;
@@ -63,9 +69,9 @@ private:
     core::empty_type _bind();
     core::empty_type _connect();
     core::empty_type _send(std::string &, core::int32_t);
-    core::empty_type _send(std::vector<std::string> &, core::int32_t);
+    core::empty_type _send(std::vector<std::string> &, core::int32_t); // multi thread send
     core::empty_type _recv(core::net::winsock_buffer_t, core::net::size_winsock_buffer_t, core::int32_t);
-    SOCKET           _accept(core::int32_t);
+    SOCKET           _accept(core::int32_t); // bug
 
 public:
     struct user_settings {
@@ -90,9 +96,14 @@ public:
     core::empty_type ListenConnect();
 
     core::empty_type Send(std::string &);
+    core::empty_type Send(std::vector<std::string> &);
     core::empty_type Recv(std::vector<core::word> *);
 
     core::empty_type start();
+
+    std::vector<core::int32_t> GetLastErrors();
+    core::empty_type OutputLastErrors();
+
 
     ~ISocket(); //closesocket
 };

@@ -48,9 +48,9 @@ std::string ISocket::_inet_ntoa(sin_addr in) {
 }
 
 core::empty_type ISocket::_connect() {
-    conf->headr.at(core::net::isocket::connect)->S_un.S_addr = inet_addr(settings->ip_addr.c_str());
-    conf->headr.at(core::net::isocket::connect)->sin_port    = htons(settings->port);
-    conf->headr.at(core::net::isocket::connect)->sin_family  = AF_INET;
+    conf->headr.at(core::net::isocket::connect)->sin_addr.S_un.S_addr = inet_addr(settings->ip_addr.c_str());
+    conf->headr.at(core::net::isocket::connect)->sin_port             = htons(settings->port);
+    conf->headr.at(core::net::isocket::connect)->sin_family           = AF_INET;
 
     if (settings->l4_proto == core::net::tcp) {
         conf->socks.at(core::net::isocket::connect) = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -132,9 +132,9 @@ core::empty_type ISocket::_connect() {
 }
 
 core::empty_type ISocket::_bind() {
-    conf->headr.at(core::net::isocket::bind)->S_un.S_addr = inet_addr(settings->ip_addr.c_str());
-    conf->headr.at(core::net::isocket::bind)->sin_port    = htons(settings->port);
-    conf->headr.at(core::net::isocket::bind)->sin_family  = AF_INET;
+    conf->headr.at(core::net::isocket::bind)->sin_addr.S_un.S_addr = inet_addr(settings->ip_addr.c_str());
+    conf->headr.at(core::net::isocket::bind)->sin_port             = htons(settings->port);
+    conf->headr.at(core::net::isocket::bind)->sin_family           = AF_INET;
 
     if(settings->l4_proto == core::net::tcp)
         conf->socks.at(core::net::isocket::bind) = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -165,19 +165,19 @@ core::empty_type ISocket::_bind() {
     #endif
 
     #ifdef WIN64
-    if(bind(conf->socks.at(core::net::isocket::bind),
-            (sockaddr *)conf->headr.at(core::net::isocket::bind),
-            conf->size_headr) != 0) {
-        conf->error_buffer.push_back(WSAGetLastError());
+        if(::bind(conf->socks.at(core::net::isocket::bind),
+                (sockaddr *)conf->headr.at(core::net::isocket::bind),
+                conf->size_headr) != 0) {
+            conf->error_buffer.push_back(WSAGetLastError());
 
-        static core::word __thread buffer[128];
+            static core::word __thread buffer[128];
 
-        snprintf(buffer, sizeof(buffer), "error bind: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+            snprintf(buffer, sizeof(buffer), "error bind: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
 
-        conf->exception_error_buffer.push_back((std::string)buffer);
-    }
+            conf->exception_error_buffer.push_back((std::string)buffer);
+        }
     #else
-    if(bind(conf->socks.at(core::net::net_treatment_part::bind),
+    if(::bind(conf->socks.at(core::net::net_treatment_part::bind),
             (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
             conf->size_headr) != 0) {
         conf->error_buffer.push_back(core::net::linux_errs::bind_err));
@@ -274,7 +274,7 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
         }
         else if(settings->l4_proto == core::net::udp) {
                 if(sendto(conf->socks.at(flag), (core::net::winsock_buffer_t)messages[i].c_str(), messages[i].size(), flag,
-                          (sockaddr *)conf->headr.at(core::net::isocket::connect) ,
+                          (sockaddr *)conf->headr.at(core::net::isocket::connect),
                           conf->size_headr) == INVALID_SOCKET) {
                     conf->error_buffer.push_back(WSAGetLastError());
                     static core::word __thread buffer[128];
@@ -286,14 +286,12 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
 }
 
 SOCKET ISocket::_accept(core::int32_t queue) {
-    if (listen(conf->socks.at(core::net::isocket::bind), queue) != 0) {
+    if (::listen(conf->socks.at(core::net::isocket::bind), queue) != 0) {
         #ifdef WIN64
             conf->error_buffer.push_back(WSAGetLastError());
         #else
             conf->error_buffer.push_back(core::net::linux_errs::listen_err);
         #endif
-
-        std::cout << "str 296 error: " << conf->error_buffer.at(conf->error_buffer.size() - 1) << std::endl;
     }
 
     #ifdef WIN64
@@ -334,6 +332,15 @@ core::empty_type ISocket::_recv(core::net::winsock_buffer_t buffer, core::net::s
         snprintf(buffer, sizeof(buffer), "error get message: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
         conf->exception_error_buffer.push_back((std::string)buffer);
     }
+}
+
+std::vector<core::int32_t> ISocket::GetLastErrors() {
+    return conf->error_buffer;
+}
+
+core::empty_type ISocket::OutputLastErrors() {
+    for (std::string msg_err : conf->exception_error_buffer)
+        std::cout << msg_err << std::endl;
 }
 
 ISocket::~ISocket() {
