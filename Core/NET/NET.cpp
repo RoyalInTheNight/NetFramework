@@ -230,10 +230,10 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
 
     for(int i = 0; i < messages.size() % 10; i++) {
         int mn3 = 0;
-        std::vector<std::string> stream;
+        std::vector<std::string> *stream = new std::vector<std::string>();
 
         for(int y = mn1; y < mn2; y++) {
-            stream[mn3] = messages[y];
+            stream->at(mn3) = messages[y];
             mn3++;
         }
 
@@ -241,7 +241,7 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
 
         std::thread([&]() {
             if(settings->l4_proto == core::net::tcp) {
-                for(std::string msg : stream)
+                for(std::string msg : *stream)
                     if(send(conf->socks.at(flag), (core::net::winsock_buffer_t)msg.c_str(), msg.size(), flag) == SOCKET_ERROR) {
                         conf->error_buffer.push_back(WSAGetLastError());
                         static core::word __thread buffer[128];
@@ -250,7 +250,7 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
                     }
             }
             else if(settings->l4_proto == core::net::udp) {
-                for(std::string msg : stream)
+                for(std::string msg : *stream)
                     if(sendto(conf->socks.at(flag), (core::net::winsock_buffer_t)msg.c_str(), msg.size(), flag,
                               (sockaddr *)conf->headr.at(core::net::isocket::connect),
                               sizeof(conf->headr.at(core::net::isocket::connect))) == INVALID_SOCKET) {
