@@ -26,25 +26,32 @@ namespace core {
         typedef core::word *  fs_path;
     }
 
-    // замена типов и инициализация констант для библиотеки net
-    namespace net {
-        typedef core::word *winsock_buffer_type;
+   namespace net {
+        typedef core::word *                winsock_buffer_t;
+        typedef std::string::size_type size_winsock_buffer_t;
 
-        const std::string &tcp = "tcp:pick";
-        const std::string &udp = "udp:pick";
+        const std::string tcp = "tcp";
+        const std::string udp = "udp";
 
-        // enumeration удобное представление чисел, чтобы не запутаться и сделать код читаемым
-        enum net_treatment_part {
-            connect = 0, // 0
-            bind, // 1
-            accept // 2
+        enum isocket {
+            connect = 0x0,
+            bind,
+            accept
         };
 
-        #ifndef WIN64 // linux const's
-            const static core::int64_t  INVALID_SOCKET = (-1);
-            const static core::int32_t  SOCKET_ERROR   = (-1);
-        #endif // WIN64
-    }
+        enum linux_errs {
+            init_err = 0x21,
+            socket_err,
+            bind_err,
+            connect_err,
+            listen_err,
+            accept_err,
+            send_err,
+            recv_err,
+            sendto_err,
+            recvfrom_err
+        };
+   }
 }
 
 #endif //NETFRAMEWORK_CORE_H
