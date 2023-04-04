@@ -42,4 +42,8 @@ class IHTTPResponce : public IHTTP {
 
 };
 
+class IHTTPSResponce : public IHTTP {
+
+};
+
 #endif //NETFRAMEWORK_IHTTP_H
