@@ -48,12 +48,7 @@ std::string ISocket::_inet_ntoa(sin_addr in) {
 }
 
 core::empty_type ISocket::_connect() {
-    #ifdef WIN64
-        conf->headr.at(core::net::isocket::connect)->sin_addr.S_un.S_addr = inet_addr(settings->ip_addr.c_str());
-    #else
-        conf->headr.at(core::net::isocket::connect)->sin_addr.s_addr = inet_addr(settings->ip_addr.c_str());
-    #endif
-
+    conf->headr.at(core::net::isocket::connect)->sin_addr.S_un.S_addr = inet_addr(settings->ip_addr.c_str());
     conf->headr.at(core::net::isocket::connect)->sin_port             = htons(settings->port);
     conf->headr.at(core::net::isocket::connect)->sin_family           = AF_INET;
 
@@ -71,7 +66,7 @@ core::empty_type ISocket::_connect() {
                 conf->exception_error_buffer.push_back((std::string)buffer);
             }
         #else
-            if (conf->socks.at(core::net::isocket::connect) != 0) {
+            if (conf->socks.at(core::net::net_treatment_part::connect) != 0) {
                 conf->error_buffer.push_back(core::net::linux_errs::socket_err);
 
                 static core::word __thread buffer[128];
@@ -95,10 +90,10 @@ core::empty_type ISocket::_connect() {
                 conf->exception_error_buffer.push_back((std::string)buffer);
             }
         #else
-            if (connect(conf->socks.at(core::net::isocket::connect),
-                        (sockaddr *)conf->headr.at(core::net::isocket::connect),
-                        conf->size_headr) == core::net::linux_errs::connect_err) {
-                conf->error_buffer.push_back(core::net::linux_errs::connect_err);
+            if (connect(conf->socks.at(core::net::net_treatment_part::connect),
+                        (sockaddr *)conf->headr.at(core::net::net_treatment_part::connect),
+                        conf->size_headr) == core::net::SOCKET_ERROR) {
+                conf->error_buffer.push_back(core::net::SOCKET_ERROR);
 
                 static core::word __thread buffer[128];
 
@@ -123,7 +118,7 @@ core::empty_type ISocket::_connect() {
                 conf->exception_error_buffer.push_back((std::string)buffer);
             }
         #else
-            if (conf->socks.at(core::net::isocket::connect) == core::net::linux_errs::socket_err) {
+            if (conf->socks.at(core::net::net_treatment_part::connect) == core::net::linux_errs::socket_err) {
                 conf->error_buffer.push_back(core::net::linux_errs::socket_err);
 
                 static core::word __thread buffer[128];
@@ -137,12 +132,7 @@ core::empty_type ISocket::_connect() {
 }
 
 core::empty_type ISocket::_bind() {
-    #ifdef WIN64
-        conf->headr.at(core::net::isocket::connect)->sin_addr.S_un.S_addr = inet_addr(settings->ip_addr.c_str());
-    #else
-        conf->headr.at(core::net::isocket::connect)->sin_addr.s_addr = inet_addr(settings->ip_addr.c_str());
-    #endif
-
+    conf->headr.at(core::net::isocket::bind)->sin_addr.S_un.S_addr = inet_addr(settings->ip_addr.c_str());
     conf->headr.at(core::net::isocket::bind)->sin_port             = htons(settings->port);
     conf->headr.at(core::net::isocket::bind)->sin_family           = AF_INET;
 
@@ -163,7 +153,7 @@ core::empty_type ISocket::_bind() {
         conf->exception_error_buffer.push_back((std::string)buffer);
     }
     #else
-        if (conf->socks.at(core::net::isocket::bind) != 0) {
+    if (conf->socks.at(core::net::net_treatment_part::bind) != 0) {
             conf->error_buffer.push_back(core::net::linux_errs::socket_err);
 
             static core::word __thread buffer[128];
@@ -187,22 +177,23 @@ core::empty_type ISocket::_bind() {
             conf->exception_error_buffer.push_back((std::string)buffer);
         }
     #else
-        if(::bind(conf->socks.at(core::net::isocket::bind),
-                  (sockaddr *)conf->headr.at(core::net::isocket::bind),
-                  conf->size_headr) != 0) {
-            conf->error_buffer.push_back(core::net::linux_errs::bind_err);
+    if(::bind(conf->socks.at(core::net::net_treatment_part::bind),
+            (sockaddr *)conf->headr.at(core::net::net_treatment_part::bind),
+            conf->size_headr) != 0) {
+        conf->error_buffer.push_back(core::net::linux_errs::bind_err));
 
-            static core::word __thread buffer[128];
-            snprintf(buffer, sizeof(buffer), "error bind: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+        static core::word __thread buffer[128];
 
-            conf->exception_error_buffer.push_back((std::string)buffer);
-        }
+        snprintf(buffer, sizeof(buffer), "error bind: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
+
+        conf->exception_error_buffer.push_back((std::string)buffer);
+    }
     #endif
 }
 
 core::empty_type ISocket::_send(std::string &message, core::int32_t flag) {
     if(settings->l4_proto == core::net::tcp) {
-        if(send(conf->socks.at(flag), (core::net::winsock_buffer_t)message.c_str(), (core::int32_t)message.size(), flag) != 0) {
+        if(send(conf->socks.at(flag), (core::net::winsock_buffer_t)message.c_str(), (core::int32_t)message.size(), flag) == SOCKET_ERROR) {
 
         #ifdef WIN64
             conf->error_buffer.push_back(WSAGetLastError());
@@ -215,11 +206,10 @@ core::empty_type ISocket::_send(std::string &message, core::int32_t flag) {
             conf->exception_error_buffer.push_back((std::string)buffer);
         }
     }
-
     else if(settings->l4_proto == core::net::udp) {
         if(sendto(conf->socks.at(flag), (core::net::winsock_buffer_t)message.c_str(), (core::int32_t)message.size(), flag,
                   (sockaddr *)conf->headr.at(core::net::isocket::connect),
-                  conf->size_headr) != 0) {
+                  conf->size_headr) == INVALID_SOCKET) {
 
             #ifdef WIN64
                 conf->error_buffer.push_back(WSAGetLastError());
@@ -240,10 +230,10 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
 
     for(int i = 0; i < messages.size() % 10; i++) {
         int mn3 = 0;
-        std::vector<std::string> *stream = new std::vector<std::string>();
+        std::vector<std::string> stream;
 
         for(int y = mn1; y < mn2; y++) {
-            stream->at(mn3) = messages[y];
+            stream.at(mn3) = messages[y];
             mn3++;
         }
 
@@ -251,30 +241,20 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
 
         std::thread([&]() {
             if(settings->l4_proto == core::net::tcp) {
-                for(std::string msg : *stream)
-                    if(send(conf->socks.at(flag), (core::net::winsock_buffer_t)msg.c_str(), msg.size(), flag) != 0) {
-                        #ifdef WIN64
-                            conf->error_buffer.push_back(WSAGetLastError());
-                        #else
-                            conf->error_buffer.push_back(core::net::linux_errs::send_err);
-                        #endif
-
+                for(std::string msg : stream)
+                    if(send(conf->socks.at(flag), (core::net::winsock_buffer_t)msg.c_str(), msg.size(), flag) == SOCKET_ERROR) {
+                        conf->error_buffer.push_back(WSAGetLastError());
                         static core::word __thread buffer[128];
                         snprintf(buffer, sizeof(buffer), "error send messages: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
                         conf->exception_error_buffer.push_back((std::string)buffer);
                     }
             }
             else if(settings->l4_proto == core::net::udp) {
-                for(std::string msg : *stream)
+                for(std::string msg : stream)
                     if(sendto(conf->socks.at(flag), (core::net::winsock_buffer_t)msg.c_str(), msg.size(), flag,
                               (sockaddr *)conf->headr.at(core::net::isocket::connect),
-                              conf->size_headr) != 0) {
-                        #ifdef WIN64
-                            conf->error_buffer.push_back(WSAGetLastError());
-                        #else
-                            conf->error_buffer.push_back(core::net::linux_errs::sendto_err);
-                        #endif
-
+                              sizeof(conf->headr.at(core::net::isocket::connect))) == INVALID_SOCKET) {
+                        conf->error_buffer.push_back(WSAGetLastError());
                         static core::word __thread buffer[128];
                         snprintf(buffer, sizeof(buffer), "error send messages: %d\n",
                                  conf->error_buffer.at(conf->error_buffer.size() - 1));
@@ -283,42 +263,30 @@ core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_
                 }
         }).join();
     }
-    for(int i = (messages.size()%10*10); i < messages.size(); i++)
+    core::int32_t cont = messages.size()%10*10;
+    for(int i = cont; i < messages.size(); i++)
         if(settings->l4_proto == core::net::tcp) {
-                if(send(conf->socks.at(flag), (core::net::winsock_buffer_t)messages[i].c_str(), messages[i].size(), flag) != 0) {
-
-                    #ifdef WIN64
-                        conf->error_buffer.push_back(WSAGetLastError());
-                    #else
-                        conf->error_buffer.push_back(core::net::linux_errs::send_err);
-                    #endif
-
+                if(send(conf->socks.at(flag), (core::net::winsock_buffer_t)messages[i].c_str(), messages[i].size(), flag) == SOCKET_ERROR) {
+                    conf->error_buffer.push_back(WSAGetLastError());
                     static core::word __thread buffer[128];
                     snprintf(buffer, sizeof(buffer), "error send messages: %d\n", conf->error_buffer.at(conf->error_buffer.size() - 1));
                     conf->exception_error_buffer.push_back((std::string)buffer);
                 }
         }
-
         else if(settings->l4_proto == core::net::udp) {
                 if(sendto(conf->socks.at(flag), (core::net::winsock_buffer_t)messages[i].c_str(), messages[i].size(), flag,
                           (sockaddr *)conf->headr.at(core::net::isocket::connect),
-                          conf->size_headr) != 0) {
-
-                    #ifdef WIN64
-                        conf->error_buffer.push_back(WSAGetLastError());
-                    #else
-                        conf->error_buffer.push_back(core::net::linux_errs::sendto_err);
-                    #endif
-
+                          conf->size_headr) == INVALID_SOCKET) {
+                    conf->error_buffer.push_back(WSAGetLastError());
                     static core::word __thread buffer[128];
                     snprintf(buffer, sizeof(buffer), "error send messages: %d\n",
                              conf->error_buffer.at(conf->error_buffer.size() - 1));
                     conf->exception_error_buffer.push_back((std::string) buffer);
                 }
-        }
+            }
 }
 
-ISocket::SOCKET ISocket::_accept(core::int32_t queue) {
+SOCKET ISocket::_accept(core::int32_t queue) {
     if (::listen(conf->socks.at(core::net::isocket::bind), queue) != 0) {
         #ifdef WIN64
             conf->error_buffer.push_back(WSAGetLastError());
@@ -339,9 +307,9 @@ ISocket::SOCKET ISocket::_accept(core::int32_t queue) {
 
             return INVALID_SOCKET;
         }
-    #else //
-        if((conf->socks.at(core::net::isocket::accept) = accept(conf->socks.at(core::net::isocket::bind),
-                                                                          (sockaddr*)conf->headr.at(core::net::isocket::accept),
+    #else
+        if((conf->socks.at(core::net::net_treatment_part::accept) = accept(conf->socks.at(core::net::net_treatment_part::bind),
+                                                                          (sockaddr*)conf->headr.at(core::net::net_treatment_part::accept),
                                                                           &conf->size_headr)) < 0) {
             conf->error_buffer.push_back(core::net::linux_errs::accept_err);
             static core::word __thread buffer[128];
@@ -374,6 +342,29 @@ std::vector<core::int32_t> ISocket::GetLastErrors() {
 core::empty_type ISocket::OutputLastErrors() {
     for (std::string msg_err : conf->exception_error_buffer)
         std::cout << msg_err << std::endl;
+}
+
+core::empty_type ISocket::ConnectTCP() {
+    if(settings->l4_proto == core::net::tcp) {
+        this->_connect();
+    }
+}
+
+core::empty_type ISocket::ListenConnect() {
+    _bind();
+    if(settings->l4_proto == core::net::tcp)
+        _accept(SOMAXCONN);
+}
+
+core::empty_type ISocket::Send(std::string &message, core::int32_t flag) {
+    this -> _send(message, flag);
+}
+core::empty_type ISocket::Send(std::vector<std::string> &messages, core::int32_t flag) {
+    this ->_send(messages, flag);
+}
+
+core::empty_type ISocket::Recv(std::vector<core::word> *buffer, core::int32_t flag) {
+    this -> _recv((core::net::winsock_buffer_t)buffer, core::net::size_winsock_buffer_t(), flag);
 }
 
 ISocket::~ISocket() {
