@@ -75,7 +75,7 @@ core::empty_type ISocket::_connect() {
 
                 conf->exception_error_buffer.push_back((std::string)buffer);
             }
-        #endif // WIN64
+        #endif // WIN64 // //
 
         #ifdef WIN64
             if (connect(conf->socks.at(core::net::isocket::connect),
