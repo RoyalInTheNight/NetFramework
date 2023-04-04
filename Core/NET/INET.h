@@ -13,6 +13,7 @@
 #  include <iostream>
 #  include <vector>
 #  include <thread>
+#  include <unistd.h>
 #  include "../Core.h"
 
 class ISocket {
@@ -53,7 +54,8 @@ private:
         std::vector<core::word>
                       data_buffer;
 
-        core::int32_t size_headr;
+        ISocket::socklen_t
+                       size_headr;
 
         std::vector<core::int32_t>
                      error_buffer;
@@ -71,13 +73,9 @@ private:
     core::empty_type _send(std::string &, core::int32_t);
     core::empty_type _send(std::vector<std::string> &, core::int32_t); // multi thread send
     core::empty_type _recv(core::net::winsock_buffer_t, core::net::size_winsock_buffer_t, core::int32_t);
-    SOCKET           _accept(core::int32_t); // bug
+    ISocket::SOCKET  _accept(core::int32_t); // bug
 
 public:
-    #ifndef WIN64
-
-    #endif
-
     struct user_settings {
         std::string    ip_addr;
         core::uint16_t    port;

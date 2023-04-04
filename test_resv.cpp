@@ -1,9 +1,13 @@
+#ifdef WIN64
 #include "Core\NET\INET.h"
+#else
+#include "Core/NET/INET.h"
+#endif
 
 core::empty_type ISocket::start() {
     _bind();
 
-    if (_accept(SOMAXCONN) == INVALID_SOCKET)
+    if (_accept(SOMAXCONN) < 0)
         exit(-1);
 
     core::net::winsock_buffer_t h = new core::word[1024];

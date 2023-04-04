@@ -1,4 +1,8 @@
+#ifdef WIN64
 #include "Core\NET\INET.h"
+#else
+#include "Core/NET/INET.h"
+#endif
 
 core::empty_type ISocket::start() {
     _connect();
