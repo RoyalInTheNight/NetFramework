@@ -30,8 +30,8 @@ namespace core {
         typedef core::word *                winsock_buffer_t;
         typedef std::string::size_type size_winsock_buffer_t;
 
-        const std::string tcp = "tcp";
-        const std::string udp = "udp";
+        const static std::string tcp = "tcp";
+        const static std::string udp = "udp";
 
         enum isocket {
             connect = 0x0,
@@ -50,6 +50,20 @@ namespace core {
             recv_err,
             sendto_err,
             recvfrom_err
+        };
+   }
+
+   namespace http {
+        const static std::string post           = "POST";
+        const static std::string get            = "GET";
+        const static std::string head           = "HEAD";
+        const static std::string put            = "PUT";
+        const static std::string delete_http    = "DELETE";
+        const static std::string options        = "OPTIONS";
+        const static std::string patch          = "PATCH";
+
+        enum http_err {
+            error_hook_ip = 0x31
         };
    }
 }

@@ -66,8 +66,6 @@ private:
 
     _pkt_conf_t              conf;
 
-    std::string _inet_ntoa(sin_addr); // перевод ip адреса из числа в строку
-
     core::empty_type _bind();
     core::empty_type _connect();
     core::empty_type _send(std::string &, core::int32_t);
@@ -88,6 +86,8 @@ public:
     }; // настройки пользователя
 
     user_settings *settings;
+
+    std::string _inet_ntoa(in_addr); // перевод ip адреса из числа в строку
 
     ISocket(const ISocket&);
     ISocket(const std::string&, core::uint16_t, const std::string&, const std::string&);
