@@ -99,9 +99,9 @@ public:
     core::empty_type ConnectTCP(); // подключение только с помощью tcp
     core::empty_type ListenConnect(); // принятие соединения
 
-    core::empty_type Send(std::string &); // отправка пакета tcp либо udp
-    core::empty_type Send(std::vector<std::string> &); // многопоточная отправка нескольких сообщений через tcp либо udp
-    core::empty_type Recv(std::vector<core::word> *); // получить по tcp либо udp
+    core::empty_type Send(std::string &, core::int32_t); // отправка пакета tcp либо udp
+    core::empty_type Send(std::vector<std::string> &, core::int32_t); // многопоточная отправка нескольких сообщений через tcp либо udp
+    core::empty_type Recv(std::vector<core::word> *, core::int32_t); // получить по tcp либо udp
 
     core::empty_type start(); // test method
 

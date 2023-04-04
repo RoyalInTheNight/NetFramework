@@ -356,6 +356,13 @@ core::empty_type ISocket::ListenConnect() {
         _accept(SOMAXCONN);
 }
 
+core::empty_type ISocket::Send(std::string &message, core::int32_t flag) {
+    this -> _send(message, flag);
+}
+core::empty_type ISocket::Send(std::vector<std::string> &messages, core::int32_t flag) {
+    this ->_send(messages, flag);
+}
+
 ISocket::~ISocket() {
     for (SOCKET fd : conf->socks) {
         #ifdef WIN64
