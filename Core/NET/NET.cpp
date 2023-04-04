@@ -398,7 +398,7 @@ core::empty_type ISocket::Send(std::vector<std::string> &messages, core::int32_t
 core::empty_type ISocket::Recv(std::vector<core::word> *buffer, core::int32_t flag) {
     this -> _recv((core::net::winsock_buffer_t)buffer, core::net::size_winsock_buffer_t(), flag);
 }
-
+//
 ISocket::~ISocket() {
     for (SOCKET fd : conf->socks) {
         #ifdef WIN64
