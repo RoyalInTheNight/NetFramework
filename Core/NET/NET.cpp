@@ -339,7 +339,7 @@ ISocket::SOCKET ISocket::_accept(core::int32_t queue) {
 
             return INVALID_SOCKET;
         }
-    #else
+    #else //
         if((conf->socks.at(core::net::isocket::accept) = accept(conf->socks.at(core::net::isocket::bind),
                                                                           (sockaddr*)conf->headr.at(core::net::isocket::accept),
                                                                           &conf->size_headr)) < 0) {

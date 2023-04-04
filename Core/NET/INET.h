@@ -55,7 +55,7 @@ private:
                       data_buffer;
 
         ISocket::socklen_t
-                       size_headr;
+                       size_headr; //
 
         std::vector<core::int32_t>
                      error_buffer;
