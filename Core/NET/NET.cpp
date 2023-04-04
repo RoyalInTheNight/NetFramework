@@ -350,6 +350,12 @@ core::empty_type ISocket::ConnectTCP() {
     }
 }
 
+core::empty_type ISocket::ListenConnect() {
+    _bind();
+    if(settings->l4_proto == core::net::tcp)
+        _accept(SOMAXCONN);
+}
+
 ISocket::~ISocket() {
     for (SOCKET fd : conf->socks) {
         #ifdef WIN64
