@@ -74,6 +74,10 @@ private:
     SOCKET           _accept(core::int32_t); // bug
 
 public:
+    #ifndef WIN64
+
+    #endif
+
     struct user_settings {
         std::string    ip_addr;
         core::uint16_t    port;
@@ -92,17 +96,17 @@ public:
 
     // основные методы для работы с упрощенными сокетами
 
-    core::empty_type ConnectTCP();
-    core::empty_type ListenConnect();
+    core::empty_type ConnectTCP(); // подключение только с помощью tcp
+    core::empty_type ListenConnect(); // принятие соединения
 
-    core::empty_type Send(std::string &);
-    core::empty_type Send(std::vector<std::string> &);
-    core::empty_type Recv(std::vector<core::word> *);
+    core::empty_type Send(std::string &); // отправка пакета tcp либо udp
+    core::empty_type Send(std::vector<std::string> &); // многопоточная отправка нескольких сообщений через tcp либо udp
+    core::empty_type Recv(std::vector<core::word> *); // получить по tcp либо udp
 
-    core::empty_type start();
+    core::empty_type start(); // test method
 
-    std::vector<core::int32_t> GetLastErrors();
-    core::empty_type OutputLastErrors();
+    std::vector<core::int32_t> GetLastErrors(); // получить последние ошибки
+    core::empty_type OutputLastErrors(); // вывести ошибки или же можно реализовать exceptions
 
 
     ~ISocket(); //closesocket
