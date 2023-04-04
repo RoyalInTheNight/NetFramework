@@ -70,7 +70,7 @@ private:
     core::empty_type _connect();
     core::empty_type _send(std::string &, core::int32_t);
     core::empty_type _send(std::vector<std::string> &, core::int32_t); // multi thread send
-    core::empty_type _recv(core::net::winsock_buffer_t, core::net::size_winsock_buffer_t, core::int32_t);
+    core::empty_type _recv(core::net::winsock_buffer_t, core::int32_t);
     ISocket::SOCKET  _accept(core::int32_t); // bug
 
 public:

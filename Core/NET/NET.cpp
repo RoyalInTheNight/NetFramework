@@ -353,8 +353,8 @@ ISocket::SOCKET ISocket::_accept(core::int32_t queue) {
     return conf->socks.at(core::net::isocket::accept);
 }
 
-core::empty_type ISocket::_recv(core::net::winsock_buffer_t buffer, core::net::size_winsock_buffer_t size_res, core::int32_t flag) {
-    if(recv(conf->socks.at(flag), buffer, (core::int32_t)size_res, 0) <= 0) {
+core::empty_type ISocket::_recv(core::net::winsock_buffer_t buffer, core::int32_t flag) {
+    if(recv(conf->socks.at(flag), buffer, (core::int32_t)SO_SNDBUF, 0) <= 0) {
         #ifdef WIN64
             conf->error_buffer.push_back(WSAGetLastError());
         #else
@@ -396,9 +396,9 @@ core::empty_type ISocket::Send(std::vector<std::string> &messages, core::int32_t
 }
 
 core::empty_type ISocket::Recv(std::vector<core::word> *buffer, core::int32_t flag) {
-    this -> _recv((core::net::winsock_buffer_t)buffer, (core::net::size_winsock_buffer_t)1024, flag);
+    this -> _recv((core::net::winsock_buffer_t)buffer, flag);
 }
-//
+
 ISocket::~ISocket() {
     for (SOCKET fd : conf->socks) {
         #ifdef WIN64
