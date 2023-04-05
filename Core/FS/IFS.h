@@ -18,7 +18,7 @@ class IFileSystem {
 
 public:
     IFileSystem(const IFileSystem&);
-    IFileSystem(const std::string& file) : filename(file) {}
+    IFileSystem(const std::string&);
 
     #ifdef WIN64
         core::fs::fs_path AppData();
