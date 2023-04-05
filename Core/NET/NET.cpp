@@ -237,11 +237,9 @@ core::empty_type ISocket::_send(std::string &message, core::int32_t flag) {
 core::empty_type ISocket::_send(std::vector<std::string> &messages, core::int32_t flag) { // bug segfault
 
     int mn1 = 0, mn2 = 10;
-
     for(int i = 0; i < messages.size() % 10; i++) {
         int mn3 = 0;
         std::vector<std::string> *stream = new std::vector<std::string>();
-
         for(int y = mn1; y < mn2; y++) {
             stream->at(mn3) = messages[y];
             mn3++;
