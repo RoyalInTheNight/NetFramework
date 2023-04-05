@@ -93,7 +93,7 @@ public:
     ISocket(const std::string&, core::uint16_t, const std::string&, const std::string&);
 
     // основные методы для работы с упрощенными сокетами
-//
+////
     core::empty_type ConnectTCP(); // подключение только с помощью tcp
     core::empty_type ListenConnect(); // принятие соединения
 

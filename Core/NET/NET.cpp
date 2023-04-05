@@ -46,7 +46,7 @@ std::string ISocket::_inet_ntoa(sin_addr in) {
 
     return return_buffer;
 }
-//
+////
 core::empty_type ISocket::_connect() {
     #ifdef WIN64
         conf->headr.at(core::net::isocket::connect)->sin_addr.S_un.S_addr = inet_addr(settings->ip_addr.c_str());
