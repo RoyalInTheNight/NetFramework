@@ -1,5 +1,5 @@
 #ifdef WIN64
-#include "Core\NET\INET.h"
+#include "INET.h"
 #else
 #include "Core/NET/INET.h"
 #endif
