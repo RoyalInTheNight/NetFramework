@@ -43,7 +43,7 @@ std::streampos IFileSystem::GetFileSize(std::string &filename) {
 }
 
 std::string& IFileSystem::ReadFile(std::string &filename) {
-    std::string return_value;
+
 
     if (this->filename == filename) {
         core::fs::fs_path buffer = new core::word[GetFileSize()];

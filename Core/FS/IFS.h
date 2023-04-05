@@ -18,6 +18,7 @@ class IFileSystem {
 
 public:
     IFileSystem(const IFileSystem&);
+    IFileSystem(const std::string& file) : filename(file) {}
 
     #ifdef WIN64
         core::fs::fs_path AppData();
@@ -28,11 +29,11 @@ public:
 
     std::streampos GetFileSize(std::string& = filename);
 
-    std::string & ReadFile(std::string& = filename);
+    std::vector<core::word>& ReadFile(std::string& = filename);
     void WriteFile(std::string& = filename);
 
     void WriteCache(std::string&, std::string& = filename);
-    std::string &ReadCache();
+    std::vector<core::word>& ReadCache();
 
     ~IFileSystem();
 };
