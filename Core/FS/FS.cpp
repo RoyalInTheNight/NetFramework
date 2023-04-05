@@ -67,31 +67,64 @@ std::vector<core::word>& IFileSystem::ReadFile(std::string &filename) {
 }
 
 core::empty_type IFileSystem::WriteFile(std::string &data, std::string &filename) {
-    this -> file_stream.write(data.c_str(), data.size());
+    if(filename == this -> filename)
+        this -> file_stream.write(data.c_str(), data.size());
+    else {
+        this -> file_stream.close();
+        this -> file_stream.open(filename, std::ios_base::binary);
+
+        this -> file_stream.write(data.c_str(), data.size());
+
+        this -> file_stream.close();
+        this -> file_stream.open(this -> filename, std::ios_base::binary);
+    }
 }
 
 core::empty_type IFileSystem::WriteFile(std::vector<std::string>&data, std::string &filename) {
-    int mn1 = 0, mn2 = 10;
-
-    for (int i = 0; i < data.size() % 10; i++) {
-        int mn3 = 0;
-        std::vector<std::string> *strings = new std::vector<std::string>();
-
-        for (int y = mn1; y < mn2; y++) {
-            strings->at(mn3) = data[y];
-            mn3++;
+    if(filename == this -> filename) {
+        int mn1 = 0, mn2 = 10;
+        for (int i = 0; i < data.size() % 10; i++) {
+            int mn3 = 0;
+            std::vector<std::string> *strings = new std::vector<std::string>();
+            for (int y = mn1; y < mn2; y++) {
+                strings->at(mn3) = data[y];
+                mn3++;
+            }
+            mn1 += 10;
+            mn2 += 10;
+            std::thread([&]() {
+                for (std::string msg: *strings)
+                    this->file_stream.write(msg.c_str(), msg.size());
+            }).join();
         }
-
-        mn1 += 10;
-        mn2 += 10;
-        std::thread([&]() {
-            for (std::string msg: *strings)
-                this->file_stream.write(msg.c_str(), msg.size());
-        }).join();
+        for (int i = (data.size() % 10 * 10); i < data.size(); i++)
+            this->file_stream.write(data[i].c_str(), data[i].size());
     }
-    for(int i = (data.size()%10*10); i < data.size(); i++)
-        this->file_stream.write(data[i].c_str(), data[i].size());
+    else {
+        this -> file_stream.close();
+        this -> file_stream.open(filename, std::ios_base::binary);
 
+        int mn1 = 0, mn2 = 10;
+        for (int i = 0; i < data.size() % 10; i++) {
+            int mn3 = 0;
+            std::vector<std::string> *strings = new std::vector<std::string>();
+            for (int y = mn1; y < mn2; y++) {
+                strings->at(mn3) = data[y];
+                mn3++;
+            }
+            mn1 += 10;
+            mn2 += 10;
+            std::thread([&]() {
+                for (std::string msg: *strings)
+                    this->file_stream.write(msg.c_str(), msg.size());
+            }).join();
+        }
+        for (int i = (data.size() % 10 * 10); i < data.size(); i++)
+            this->file_stream.write(data[i].c_str(), data[i].size());
+
+        this -> file_stream.close();
+        this -> file_stream.open(this -> filename, std::ios_base::binary);
+    }
 }
 
 IFileSystem::~IFileSystem() {
