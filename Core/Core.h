@@ -5,6 +5,8 @@
 #ifndef NETFRAMEWORK_CORE_H
 #define NETFRAMEWORK_CORE_H
 
+#include <string>
+
 namespace core {
     // переопределение основных типов данных
     typedef signed char          int8_t;
@@ -16,6 +18,7 @@ namespace core {
     typedef unsigned int       uint32_t;
     typedef long long           int64_t;
     typedef unsigned long long uint64_t;
+    typedef bool             comparison;
 
     // замена типа void, void *
     typedef void                 empty_type;

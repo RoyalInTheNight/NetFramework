@@ -36,7 +36,7 @@ ISocket::ISocket(const std::string &ip_address, core::uint16_t port, const std::
     #endif
 }
 
-std::string ISocket::_inet_ntoa(sin_addr in) {
+std::string ISocket::_inet_ntoa(in_addr in) {
     static core::word __thread buffer[18];
     core::fs::fs_path bytes = (core::fs::fs_path)&in;
 
