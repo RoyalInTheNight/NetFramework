@@ -43,6 +43,8 @@ template<class pointer_t> ISPtr<pointer_t>& ISPtr<pointer_t>::operator+(ISPtr<po
 
         for (core::uint64_t i = this->size_alloc + 1; i < this->size_alloc + obj.size_alloc; i++)
             *(this->ptr + i) = std::move(*(obj.ptr + i - this->size_alloc));
+       
+       this->size_alloc += obj.size_alloc;
     }
 
     else {
