@@ -1,7 +1,7 @@
 #ifdef WIN64
-#include "INET.h"
+#include "..\INET.h"
 #else
-#include "Core/NET/INET.h"
+#include "../INET.h"
 #endif
 
 core::empty_type ISocket::start() {

@@ -1,7 +1,7 @@
 #ifdef WIN64
-#include "INET.h"
+#include "..\INET.h"
 #else
-#include "Core/NET/INET.h"
+#include "../INET.h"
 #endif
 
 core::empty_type ISocket::start() {
@@ -11,7 +11,7 @@ core::empty_type ISocket::start() {
         exit(-1);
 
     core::net::winsock_buffer_t h = new core::word[1024];
-    _recv(h, 1024, core::net::isocket::accept);
+    _recv(h, core::net::isocket::accept);
     std::cout << "msg: " << h << std::endl;
 
 }

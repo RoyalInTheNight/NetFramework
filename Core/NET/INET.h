@@ -15,6 +15,7 @@
 #  include <thread>
 #  include <unistd.h>
 #  include "../Core.h"
+#  include "../ISPtr.h"
 
 class ISocket {
 private:
@@ -64,7 +65,7 @@ private:
            exception_error_buffer;
     } pkt_conf_t, *_pkt_conf_t; // структура для надстройки функций начиная с 59 по 63 строку
 
-    _pkt_conf_t              conf;
+    ISPtr<pkt_conf_t> conf;
 
     core::empty_type _bind();
     core::empty_type _connect();
@@ -85,7 +86,7 @@ public:
                      log_cache; // массив, который будет кэшироваться в tmp папке
     }; // настройки пользователя
 
-    user_settings *settings;
+    ISPtr<user_settings> settings;
 
     std::string _inet_ntoa(in_addr); // перевод ip адреса из числа в строку
 

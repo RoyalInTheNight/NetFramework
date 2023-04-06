@@ -42,8 +42,6 @@ core::int32_t main() {
     std::cout << "size according to calculations: " << (end_address_decimal - begin_address_decimal) / sizeof(core::int32_t) << std::endl;
 
     // test of writing a number to a memory area
-    for (core::uint64_t i = 0; i < pointer.size() - 1; i++)
-        pointer[i] = i;
-
-    std::cout << "begin index: " << pointer[0] << "\nend index: " << pointer[pointer.size() - 1] << std::endl;
+    for (core::uint64_t i = 0; i < pointer.size(); i++)
+        pointer[i] = (core::int32_t)i;
 }

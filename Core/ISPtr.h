@@ -8,6 +8,10 @@
 #include "Core.h"
 #include <iostream>
 
+namespace ptr {
+    core::int32_t user_type = 0;
+}
+
 template<class pointer_t> class ISPtr {
 private:
     pointer_t            *ptr;
@@ -16,24 +20,14 @@ private:
 public:
     ISPtr(ISPtr<pointer_t> &copy) {
         *this = std::move(copy);
-
-        std::cout << "Constructor input" << std::endl;
     }
 
     ISPtr(core::uint64_t size) : size_alloc(size) {
-        if (this->size_alloc > 1)
-            this->ptr = new pointer_t[size];
-
-        else
-            this->ptr = new pointer_t;
-
-        std::cout << "Constructor input" << std::endl;
+        this->ptr = new pointer_t[size];
     }
 
     ISPtr() : size_alloc(1) {
         this->ptr = new pointer_t;
-
-        std::cout << "Constructor input" << std::endl;
     }
 
     pointer_t& operator*() {
@@ -74,8 +68,6 @@ public:
 
         else
             delete this->ptr;
-
-        std::cout << "Destructor input" << std::endl;
     }
 };
 
