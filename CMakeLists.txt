@@ -9,4 +9,5 @@ include_directories(Core/NET)
 
 add_executable(NetFramework Core/FS/FS.cpp
                Core/HTTP/HTTP.cpp
-               Core/NET/NET.cpp)
+               Core/NET/NET.cpp
+               Core/SPtr.cpp Core/test_smart_pointers.cpp)
