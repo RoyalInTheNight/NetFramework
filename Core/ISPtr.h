@@ -4,7 +4,7 @@
 
 #ifndef NETFRAMEWORK_ISPTR_H
 #define NETFRAMEWORK_ISPTR_H
-
+//
 #include "Core.h"
 #include <iostream>
 

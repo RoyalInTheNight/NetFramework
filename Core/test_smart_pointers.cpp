@@ -4,7 +4,7 @@
 
 #include "ISPtr.h"
 #include <thread>
-
+//
 core::int32_t main() {
     ISPtr<core::int32_t> pointer(3423123);
 
