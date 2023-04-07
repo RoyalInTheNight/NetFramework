@@ -6,11 +6,11 @@
 #include <iostream>
 
 core::int32_t main() {
-    ISPtr<core::int32_t> array(2147483646);
+    ISPtr<core::int32_t> array(2147483646); // test allocate 9 Gb memory
 
     for (core::int32_t i = 0; i < array.size(); i++)
         array[i] = i;
 
     for (core::int32_t i = 2147000000; i < array.size(); i++)
-        std::cout << array[i] << std::endl;
+        std::cout << array[i] << std::endl; // test auto delete memory
 }
