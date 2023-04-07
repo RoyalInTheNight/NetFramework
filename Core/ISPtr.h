@@ -7,68 +7,60 @@
 //
 #include "Core.h"
 #include <iostream>
+#include <exception>
 
-namespace ptr {
-    core::int32_t user_type = 0;
-}
+namespace sptr = core::ptr;
 
-template<class pointer_t> class ISPtr {
+template<class ptr_t> class ISPtr {
 private:
-    pointer_t            *ptr;
-    core::uint64_t size_alloc;
+    ptr_t              *ptr;
+    sptr::size_t size_alloc;
 
 public:
-    ISPtr(ISPtr<pointer_t> &copy) {
-        *this = std::move(copy);
+    ISPtr(sptr::size_t size) : size_alloc(size) {
+        ptr = new ptr_t[size_alloc];
     }
 
-    ISPtr(core::uint64_t size) : size_alloc(size) {
-        this->ptr = new pointer_t[size];
+    ISPtr(const ISPtr<ptr_t> &isPtr) {
+        ptr        = isPtr.ptr;
+        size_alloc = isPtr.size_alloc;
     }
 
     ISPtr() : size_alloc(1) {
-        this->ptr = new pointer_t;
+        ptr = new ptr_t();
     }
 
-    pointer_t& operator*() {
-        return *this->ptr;
+    ptr_t& data() {
+        return *ptr;
     }
 
-    pointer_t& operator[](core::uint64_t pos) {
-        if (pos >= this->size_alloc) {
-            std::cerr << "out of range - pos: " << pos << " >= size_alloc: " << this->size_alloc << std::endl;
-            exit(-1);
-        }
-
-        else
-            return this->ptr[pos];
+    ptr_t* memory() {
+        return ptr;
     }
 
-    void add_memory() {
-        this->ptr = new pointer_t[1];
-        this->size_alloc++;
+    ptr_t& operator[](sptr::size_t size) {
+        if (size_alloc <= size)
+            throw std::runtime_error("out of range - pos: " + std::to_string(size) + " >= size_alloc: " + std::to_string(size_alloc) + "\n");
+
+        return *(ptr + size);
     }
 
-    void add_memory(core::uint64_t size) {
-        this->ptr = new pointer_t[size];
-        this->size_alloc += size;
+    sptr::size_t size() {
+        return size_alloc;
     }
 
-    inline core::uint64_t size() {
-        return this->size_alloc;
-    }
-
-    inline core::uint64_t bytes_size() {
-        return sizeof(pointer_t) * this->size_alloc;
+    sptr::size_t length() {
+        return size_alloc - 1;
     }
 
     ~ISPtr() {
         if (size_alloc > 1)
-            delete[] this->ptr;
+            delete[] ptr;
 
         else
-            delete this->ptr;
+            delete ptr;
     }
 };
+
 
 #endif //NETFRAMEWORK_ISPTR_H

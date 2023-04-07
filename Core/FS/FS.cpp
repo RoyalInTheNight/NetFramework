@@ -2,85 +2,84 @@
 // Created by MikoG on 30.03.2023.
 //
 #include "IFS.h"
+#include <exception>
 
-IFileSystem::IFileSystem(const IFileSystem &fs_copy) {
-    *this = std::move(fs_copy);
-
-    this->file_stream.open(this->filename);
-}
-
-IFileSystem::IFileSystem(const std::string &filename) {
-    this->filename = std::move(filename);
-}
-
-#ifdef WIN64
-    core::fs::fs_path IFileSystem::AppData() {
-        return std::getenv((const core::fs::fs_path)"APPDATA");
-    }
-#endif
-
-core::fs::fs_path IFileSystem::Home() {
-    return std::getenv((const core::fs::fs_path)"HOME");
-}
-
-core::fs::fs_path IFileSystem::Temp() {
-    return std::getenv((const core::fs::fs_path)"TEMP");
-}
-
-std::streampos IFileSystem::GetFileSize(std::string &filename) {
+std::streampos IFileSystem::GetFileSize(const fs::path& path) {
     std::streampos file_size = 0;
 
-    if (this->filename == filename) {
-        this->file_stream.seekg(0, std::ios_base::end);
-        file_size = std::move(this->file_stream.tellg());
-    }
+    out_file.open(path, std::ios_base::binary);
+
+    if (out_file.fail())
+        throw std::runtime_error("Error get size\n");
 
     else {
-        this->file_stream.close();
-        this->file_stream.open(filename, std::ios_base::binary);
+        file_size = out_file.tellg();
+        out_file.seekg(0, std::ios::end);
+        file_size = out_file.tellg() - file_size;
 
-        this->file_stream.seekg(0, std::ios_base::end);
-        file_size = std::move(this->file_stream.tellg());
-        this->file_stream.close();
-        this->file_stream.open(this->filename, std::ios_base::binary);
+        out_file.close();
     }
 
     return file_size;
 }
 
-std::vector<core::word>& IFileSystem::ReadFile(std::string &filename) {
-    std::vector<core::word> *buffer_v = new std::vector<core::word>(GetFileSize(filename));
+std::string IFileSystem::ReadFile(const fs::path &path) {
+    ISPtr<core::int8_t> buffer((sptr::size_t)GetFileSize(path));
 
-    if (this->filename == filename) {
-        this->file_stream.read(buffer_v->data(), std::move(GetFileSize()));
-    }
+    out_file.open(path, std::ios_base::binary);
+
+    if (out_file.fail())
+        throw std::runtime_error("File open error\n");
 
     else {
-        this->file_stream.close();
-        this->file_stream.open(filename, std::ios_base::binary);
-        this->file_stream.read(buffer_v->data(), std::move(GetFileSize()));
-        this->file_stream.close();
-        this->file_stream.open(this->filename, std::ios_base::binary);
+        out_file.read(buffer.memory(), buffer.size());
+        out_file.close();
     }
 
-    return *buffer_v;
+    std::string return_buffer = buffer.memory();
+
+    return return_buffer;
 }
 
-core::empty_type IFileSystem::WriteFile(std::string &data, std::string &filename) {
-    if(filename == this -> filename)
-        this -> file_stream.write(data.c_str(), data.size());
-    else {
-        this -> file_stream.close();
-        this -> file_stream.open(filename, std::ios_base::binary);
+core::empty_type IFileSystem::WriteFile(const fs::path &path, const std::string& data) {
+    in_file.open(path, std::ios_base::binary);
 
-        this -> file_stream.write(data.c_str(), data.size());
-
-        this -> file_stream.close();
-        this -> file_stream.open(this -> filename, std::ios_base::binary);
+    if (in_file.is_open()) {
+        in_file.write(data.c_str(), data.size());
+        in_file.close();
     }
+
+    else
+        throw std::runtime_error("Error open file\n");
 }
 
-core::empty_type IFileSystem::WriteFile(std::vector<std::string>&data, std::string &filename) {
+core::empty_type IFileSystem::WriteFile(const fs::path &path, const std::vector<std::string> &data) {
+    in_file.open(path, std::ios_base::binary);
+
+    if (in_file.is_open()) {
+        for (const auto& str : data)
+            in_file.write(str.c_str(), str.size());
+
+        in_file.close();
+    }
+
+    else
+        throw std::runtime_error("Error open file\n");
+}
+
+core::comparsion IFileSystem::RemoveFile(const fs::path &path) {
+    return fs::remove(path);
+}
+
+IFileSystem::~IFileSystem() {
+    if (out_file.is_open())
+        out_file.close();
+
+    if (in_file.is_open())
+        in_file.close();
+}
+
+/*core::empty_type IFileSystem::WriteFile(std::vector<std::string>&data, std::string &filename) {
     if(filename == this -> filename) {
         int mn1 = 0, mn2 = 10;
         for (int i = 0; i < data.size() % 10; i++) {
@@ -125,8 +124,4 @@ core::empty_type IFileSystem::WriteFile(std::vector<std::string>&data, std::stri
         this -> file_stream.close();
         this -> file_stream.open(this -> filename, std::ios_base::binary);
     }
-}
-
-IFileSystem::~IFileSystem() {
-    this->file_stream.close();
-}
+}*/

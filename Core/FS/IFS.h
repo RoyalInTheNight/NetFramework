@@ -1,37 +1,27 @@
 #ifndef NETFRAMEWORK_IFS_H
 #define NETFRAMEWORK_IFS_H
 
-#import <vector>
-#import <string>
-#import <thread>
-#import <fstream>
-#import <iostream>
+#include <fstream>
+#include <filesystem>
+#include "../ISPtr.h"
+#include "../Core.h"
 
-#import "../Core.h"
+namespace fs = std::filesystem;
+namespace sptr     = core::ptr;
 
 class IFileSystem {
-    static std::string     filename;
-    static std::fstream file_stream;
+private:
+    std::ifstream     out_file;
+    std::ofstream      in_file;
 
 public:
-    IFileSystem(const IFileSystem&);
-    IFileSystem(const std::string&);
+    std::streampos GetFileSize(const fs::path&);
 
-    #ifdef WIN64
-        core::fs::fs_path AppData();
-    #endif
+    std::string       ReadFile(const fs::path&);
+    core::empty_type WriteFile(const fs::path&, const std::string&);
+    core::empty_type WriteFile(const fs::path&, const std::vector<std::string>&);
 
-    core::fs::fs_path Temp(); // for cache
-    core::fs::fs_path Home();
-
-    std::streampos GetFileSize(std::string& = filename);
-
-    std::vector<core::word>& ReadFile(std::string& = filename);
-    core::empty_type WriteFile(std::string&, std::string& = filename);
-    core::empty_type WriteFile(std::vector<std::string>&, std::string& = filename);
-
-    void WriteCache(std::string&, std::string& = filename);
-    std::vector<core::word>& ReadCache();
+    core::comparsion RemoveFile(const fs::path&);
 
     ~IFileSystem();
 };
