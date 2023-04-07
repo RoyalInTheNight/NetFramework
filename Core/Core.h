@@ -5,9 +5,11 @@
 #ifndef NETFRAMEWORK_CORE_H
 #define NETFRAMEWORK_CORE_H
 
+#include <string>
+
 namespace core {
     // переопределение основных типов данных
-    typedef signed char          int8_t;
+    typedef char                 int8_t;
     typedef char                   word;
     typedef unsigned char       uint8_t;
     typedef short               int16_t;
@@ -17,6 +19,8 @@ namespace core {
     typedef long long           int64_t;
     typedef unsigned long long uint64_t;
 
+    typedef bool             comparsion;
+
     // замена типа void, void *
     typedef void                 empty_type;
     typedef core::empty_type *memory_buffer;
@@ -24,6 +28,10 @@ namespace core {
     // замена типа, для библиотеки fs
     namespace fs {
         typedef core::word *  fs_path;
+    }
+
+    namespace ptr {
+        typedef core::int32_t size_t;
     }
 
    namespace net {
