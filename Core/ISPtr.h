@@ -1,12 +1,7 @@
-//
-// Created by MikoG on 06.04.2023.
-//
-
 #ifndef NETFRAMEWORK_ISPTR_H
 #define NETFRAMEWORK_ISPTR_H
-//
-#include "Core.h"
-#include <iostream>
+
+#import "Core.h"
 #include <exception>
 
 namespace sptr = core::ptr;

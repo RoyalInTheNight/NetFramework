@@ -1,11 +1,7 @@
-//
-// Created by MikoG on 30.03.2023.
-//
-
 #ifndef NETFRAMEWORK_CORE_H
 #define NETFRAMEWORK_CORE_H
 
-#include <string>
+#import <string>
 
 namespace core {
     // переопределение основных типов данных
@@ -74,6 +70,10 @@ namespace core {
             error_hook_ip = 0x31
         };
    }
+
+   namespace blob {
+
+    }
 }
 
 #endif //NETFRAMEWORK_CORE_H

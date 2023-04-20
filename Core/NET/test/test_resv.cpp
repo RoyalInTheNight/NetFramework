@@ -4,7 +4,7 @@
 #include "../INET.h"
 #endif
 
-core::empty_type ISocket::start() {
+core::empty_type INetWork::start() {
     _bind();
 
     if (_accept(SOMAXCONN) < 0)
@@ -17,9 +17,9 @@ core::empty_type ISocket::start() {
 }
 
 int main () {
-    ISocket test("0.0.0.0", 4445, "tcp", "cache.ch");
-
-    test.start();
+    INetWork text("0.0.0.0", 4445, "tcp", "cache.ch");
+    INetErrors test;
+    text.start();
 
     std::vector<core::int32_t> error_buffer = test.GetLastErrors();
 

@@ -1,10 +1,10 @@
 #include "INET.h"
 
-ISocket::ISocket(const ISocket& copy_settings) {
+INetWork::INetWork(const INetWork& copy_settings) {
     *this = copy_settings;
 }
 
-ISocket::ISocket(const std::string &ip_address, core::uint16_t port, const std::string &transport_protocol, const std::string &cache_filename) {
+INetWork::INetWork(const std::string &ip_address, core::uint16_t port, const std::string &transport_protocol, const std::string &cache_filename) {
     settings.data().ip_addr    = ip_address;
     settings.data().port       = port;
     settings.data().l4_proto   = transport_protocol;
@@ -34,7 +34,7 @@ ISocket::ISocket(const std::string &ip_address, core::uint16_t port, const std::
     #endif
 }
 
-std::string ISocket::_inet_ntoa(in_addr in) {
+std::string INetWork::_inet_ntoa(in_addr in) {
     static core::word __thread buffer[18];
     core::fs::fs_path bytes = (core::fs::fs_path)&in;
 
@@ -377,35 +377,35 @@ core::empty_type ISocket::_recv(core::net::winsock_buffer_t buffer, core::int32_
     }
 }
 
-std::vector<core::int32_t> ISocket::GetLastErrors() {
+std::vector<core::int32_t> INetErrors::GetLastErrors() {
     return conf.data().error_buffer;
 }
 
-core::empty_type ISocket::OutputLastErrors() {
+core::empty_type INetErrors::OutputLastErrors() {
     for (std::string msg_err : conf.data().exception_error_buffer)
         std::cout << msg_err << std::endl;
 }
 
-core::empty_type ISocket::ConnectTCP() {
+core::empty_type INetWork::ConnectTCP() {
     if(settings.data().l4_proto == core::net::tcp) {
         this->_connect();
     }
 }
 
-core::empty_type ISocket::ListenConnect() {
+core::empty_type INetWork::ListenConnect() {
     _bind();
     if(settings.data().l4_proto == core::net::tcp)
         _accept(SOMAXCONN);
 }
 
-core::empty_type ISocket::Send(std::string &message, core::int32_t flag) {
+core::empty_type INetWork::Send(std::string &message, core::int32_t flag) {
     this -> _send(message, flag);
 }
-core::empty_type ISocket::Send(std::vector<std::string> &messages, core::int32_t flag) {
+core::empty_type INetWork::Send(std::vector<std::string> &messages, core::int32_t flag) {
     this ->_send(messages, flag);
 }
 
-core::empty_type ISocket::Recv(std::vector<core::word> *buffer, core::int32_t flag) {
+core::empty_type INetWork::Recv(std::vector<core::word> *buffer, core::int32_t flag) {
     this -> _recv((core::net::winsock_buffer_t)buffer, flag);
 }
 
