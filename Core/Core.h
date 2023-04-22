@@ -72,7 +72,9 @@ namespace core {
    }
 
    namespace blob {
-
+       typedef std::bitset<32> _32bits;
+       typedef std::bitset<16> _16bits;
+       typedef std::bitset<8>   _8bits;
     }
 }
 
