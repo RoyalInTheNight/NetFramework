@@ -3,22 +3,24 @@
 #define NETFRAMEWORK_INET_H
 
 #ifdef WIN64 // Windows
-#  include <WinSock2.h>
-#  include <ws2tcpip.h>
+#  import <WinSock2.h>
+#  import <ws2tcpip.h>
 #else // Linux
-#  include <sys/socket.h>
-#  include <arpa/inet.h>
-#  include <netinet/in.h>
+#  import <sys/socket.h>
+#  import <arpa/inet.h>
+#  import <netinet/in.h>
 #endif // WIN64
-#  include <iostream>
-#  include <vector>
-#  include <thread>
-#  include <unistd.h>
-#  include "../Core.h"
-#  include "../ISPtr.h"
+#  import <iostream>
+#  import <vector>
+#  import <thread>
+#  import <unistd.h>
+# import "../Core.h"
+# import "../ISPtr.h"
+//# import "../BLOB/IBLOB.h"
+
 
 class ISocket {
-private:
+protected:
     #ifdef WIN64 // замена типов данных для кросплатформенности
         typedef SOCKET            SOCKET;
         typedef core::int32_t  socklen_t;
@@ -34,6 +36,19 @@ private:
             core::uint32_t S_addr;
         } S_un;
     };
+
+    struct user_settings {
+        std::string    ip_addr;
+        core::uint16_t    port;
+
+        std::string   l4_proto;
+        std::string cache_file;
+
+        std::vector<std::string>
+                log_cache; // массив, который будет кэшироваться в tmp папке
+    }; // настройки пользователя
+
+    ISPtr<user_settings> settings;
 
     /*typedef struct sock_in { // аналог sockaddr_in
         sin_addr         sin_addr;
@@ -74,41 +89,31 @@ private:
     core::empty_type _recv(core::net::winsock_buffer_t, core::int32_t);
     ISocket::SOCKET  _accept(core::int32_t); // bug
 
+    virtual ~ISocket(); //closesocket
+};
+
+class INetWork : public ISocket {
 public:
-    struct user_settings {
-        std::string    ip_addr;
-        core::uint16_t    port;
-
-        std::string   l4_proto;
-        std::string cache_file;
-
-        std::vector<std::string>
-                     log_cache; // массив, который будет кэшироваться в tmp папке
-    }; // настройки пользователя
-
-    ISPtr<user_settings> settings;
-
     std::string _inet_ntoa(in_addr); // перевод ip адреса из числа в строку
 
-    ISocket(const ISocket&);
-    ISocket(const std::string&, core::uint16_t, const std::string&, const std::string&);
+    INetWork(const INetWork&);
+    INetWork(const std::string&, core::uint16_t, const std::string&, const std::string&);
 
     // основные методы для работы с упрощенными сокетами
 
     core::empty_type ConnectTCP(); // подключение только с помощью tcp
     core::empty_type ListenConnect(); // принятие соединения
-
     core::empty_type Send(std::string &, core::int32_t); // отправка пакета tcp либо udp
     core::empty_type Send(std::vector<std::string> &, core::int32_t); // многопоточная отправка нескольких сообщений через tcp либо udp
     core::empty_type Recv(std::vector<core::word> *, core::int32_t); // получить по tcp либо udp
-
     core::empty_type start(); // test method
 
+};
+
+class INetErrors : public ISocket {
+public:
     std::vector<core::int32_t> GetLastErrors(); // получить последние ошибки
     core::empty_type OutputLastErrors(); // вывести ошибки или же можно реализовать exceptions
-
-
-    ~ISocket(); //closesocket
 };
 
 #endif //NETFRAMEWORK_INET_H

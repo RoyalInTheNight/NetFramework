@@ -17,9 +17,10 @@ private:
 public:
     std::streampos GetFileSize(const fs::path&);
 
-    std::string       ReadFile(const fs::path&);
+    std::string      ReadFile(const fs::path&);
     core::empty_type WriteFile(const fs::path&, const std::string&);
     core::empty_type WriteFile(const fs::path&, const std::vector<std::string>&);
+    core::empty_type WriteFile(const fs::path&, const std::vector<core::blob::_8bits> &);
 
     core::comparsion RemoveFile(const fs::path&);
 

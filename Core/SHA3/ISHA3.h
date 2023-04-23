@@ -2,9 +2,10 @@
 #define NETFRAMEWORK_SHA3_H
 #import <iostream>
 #import "../Core.h"
-#import "../BLOB/IBLOB.h"
+#import <vector>
+//#import "../BLOB/IBLOB.h"
 
-class sha3 {
+class ISHA3 {
 private:
     const core::int32_t     rounds = 24;
     const core::int32_t         asl = 6;
@@ -14,8 +15,11 @@ private:
     const core::int32_t capacity = 1024; // вместимость
     core::blob::_32bits            data;
 public:
-    sha3(core::blob::_32bits address);
-    core::blob::_32bits hashing();
+    ISHA3(core::blob::_32bits &);
+    core::blob::_32bits     hashing();
+    void                      reset();
+    void   add(core::blob::_32bits &);
+    uint32_t                   size();
 };
 #endif
 

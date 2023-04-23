@@ -2,6 +2,11 @@
 #define NETFRAMEWORK_CORE_H
 
 #import <string>
+//#ifdef WIN64
+#import <bitset>
+//#else // Linux
+//#import <bits/stdc++.h>
+//#endif
 
 namespace core {
     // переопределение основных типов данных
@@ -72,9 +77,11 @@ namespace core {
    }
 
    namespace blob {
-       typedef std::bitset<32> _32bits;
-       typedef std::bitset<16> _16bits;
-       typedef std::bitset<8>   _8bits;
+        typedef std::bitset<64> _64bits;
+        typedef std::bitset<32> _32bits;
+        typedef std::bitset<16> _16bits;
+        typedef std::bitset<10> _10bits;
+        typedef std::bitset<8>   _8bits;
     }
 }
 

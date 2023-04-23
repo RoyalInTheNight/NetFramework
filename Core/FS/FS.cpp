@@ -59,10 +59,21 @@ core::empty_type IFileSystem::WriteFile(const fs::path &path, const std::vector<
     if (in_file.is_open()) {
         for (const auto& str : data)
             in_file.write(str.c_str(), str.size());
-
         in_file.close();
     }
+    else
+        throw std::runtime_error("Error open file\n");
+}
 
+core::empty_type WriteFile(const fs::path &path, const std::vector<std::vector<core::blob::_8bits>> &data {
+    in_file.open(path, std::ios_base::binary);
+
+    if (in_file.is_open()) {
+        for(int i=0; i < data.size(); i++)
+            for(auto &str : data.at(i))
+                in_file.write(str.to_string(), str.size());
+        in_file.close();
+    }
     else
         throw std::runtime_error("Error open file\n");
 }
